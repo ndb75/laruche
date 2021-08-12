@@ -77,31 +77,37 @@ class StockController extends  AbstractController
         $form = $this->createForm(StockInput::class, $stock);
         $form->submit($request->request->all());
 
-        if ($form->isValid()) {
-            //call file service to upload file into the good folder
-            $filenameUploaded = $fileUploadService->uploadFile($uploadedFile);
-            if ($filenameUploaded == '') {
-                return $this->json(
-                    ['Invalid data' => 'Invalid file format'],
-                    Response::HTTP_UNPROCESSABLE_ENTITY
-                );
-            }
-            //call stock service to treat
-            $stockService->parseUploadedFile($filenameUploaded);
-
-            $stock->setFilename($filenameUploaded);
-            $stock->setAveragePrice($stockService->getAveragePrice());
-            $stock->setMaxPrice($stockService->getMaxPrice());
-            $stock->setMinPrice($stockService->getMinPrice());
-            $stock->setNbCountry($stockService->getNumberOfCountries());
-
-            $entityManager->persist($stock);
-            $entityManager->flush();
-
-            //insert gift here
-            $stock = $stockService->insertIntoDatabase($stock);
-            $entityManager->clear();
+        if (!$form->isValid()) {
+            return $this->json(
+                ['Invalid data' => 'Invalid parameters'],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
+
+        //call file service to upload file into the good folder
+        $filenameUploaded = $fileUploadService->uploadFile($uploadedFile);
+        if ($filenameUploaded == '') {
+            return $this->json(
+                ['Invalid data' => 'Invalid file format'],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+        //call stock service to treat
+        $stockService->parseUploadedFile($filenameUploaded);
+
+        $stock->setFilename($filenameUploaded);
+        $stock->setAveragePrice($stockService->getAveragePrice());
+        $stock->setMaxPrice($stockService->getMaxPrice());
+        $stock->setMinPrice($stockService->getMinPrice());
+        $stock->setNbCountry($stockService->getNumberOfCountries());
+
+        $entityManager->persist($stock);
+        $entityManager->flush();
+
+        //insert gift here
+        $stock = $stockService->insertIntoDatabase($stock);
+        $entityManager->clear();
+
 
         return $this->json($stock, Response::HTTP_CREATED, [], ['groups' => 'api.stock.post']);
     }
