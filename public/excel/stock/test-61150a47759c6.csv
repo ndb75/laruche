@@ -1,0 +1,5 @@
+gift_uuid,gift_code,gift_description,gift_price,receiver_uuid,receiver_first_name,receiver_last_name,receiver_country_code
+da0d6adb-6ace-4a5c-8eda-50c4d72b7468,car,(╯°□°）╯︵ ┻━┻)  ,90.45,dd49d9ac-5cd3-49b0-8dbe-ea09e18f8c9d,Marie-ève,Hearfield,CN
+test,,,,,,,
+3da0b74b-3fea-4ff3-b7a4-43758763bf72,hardware,<svg><script>0<1>alert('XSS')</script>,3.0,8e3b1a58-c517-4fbd-aba2-89b407994107,Vérane,O'Daly,ID
+8c345e48-6c3b-4cc5-bf3e-dbea98c6b229,sport,﻿,7.12,7064f146-421c-4023-acb1-9120101782ed,Salomé,Ronald,SY
