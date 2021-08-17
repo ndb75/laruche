@@ -2,6 +2,7 @@
 /var/cache/
 .idea/
 excel/
+.env.*.local
 
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
