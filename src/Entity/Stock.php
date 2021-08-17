@@ -90,6 +90,12 @@ class Stock
      */
     private $gifts;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="stocks")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
     public function __construct() {
         $this->date_upload = new \DateTime();
         $this->gifts = new ArrayCollection();
@@ -214,6 +220,18 @@ class Stock
                 $gift->setStock(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

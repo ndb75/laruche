@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -34,6 +36,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Stock::class, mappedBy="user")
+     */
+    private $stocks;
+
+    public function __construct()
+    {
+        $this->stocks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -122,5 +134,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection|Stock[]
+     */
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
+
+    public function addStock(Stock $stock): self
+    {
+        if (!$this->stocks->contains($stock)) {
+            $this->stocks[] = $stock;
+            $stock->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Stock $stock): self
+    {
+        if ($this->stocks->removeElement($stock)) {
+            // set the owning side to null (unless already changed)
+            if ($stock->getUser() === $this) {
+                $stock->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

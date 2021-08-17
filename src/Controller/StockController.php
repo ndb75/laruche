@@ -67,7 +67,6 @@ class StockController extends  AbstractController
         FileUploadService $fileUploadService,
         StockService $stockService
     ) {
-
         $uploadedFile = $request->files->get('file');
         if (!$uploadedFile) {
             throw new BadRequestHttpException('"file" is required');
@@ -100,6 +99,7 @@ class StockController extends  AbstractController
         $stock->setMaxPrice($stockService->getMaxPrice());
         $stock->setMinPrice($stockService->getMinPrice());
         $stock->setNbCountry($stockService->getNumberOfCountries());
+        $stock->setUser($this->getUser());
 
         $entityManager->persist($stock);
         $entityManager->flush();
@@ -107,7 +107,6 @@ class StockController extends  AbstractController
         //insert gift here
         $stock = $stockService->insertIntoDatabase($stock);
         $entityManager->clear();
-
 
         return $this->json($stock, Response::HTTP_CREATED, [], ['groups' => 'api.stock.post']);
     }
@@ -136,6 +135,12 @@ class StockController extends  AbstractController
      * @Security(name="Bearer")
      */
     public function getStockStatistics(Request $request, Stock $stock) {
+        if ($this->getUser()->getId() != $stock->getUser()->getId()) {
+            return $this->json(
+                ['Access forbidden' => 'Access forbidden'],
+                Response::HTTP_FORBIDDEN
+            );
+        }
         return $this->json($stock, Response::HTTP_OK,  [], ['groups' => 'api.stock.get']);
     }
 }
